@@ -1,25 +1,19 @@
-import requests
+from src.automation.bat import RequestClone
+
 
 class TSA:
     def __init__(self, token, suite_id):
         self.token = token
-        self.url = "https://testesuaapi.ftabb.intranet.bb.com.br/api"
         self.suite_id = suite_id
-        self.headers = {
-            "Authorization": f"Bearer {self.token}",
-            "Content-Type": "application/json"
-        }
-        self.cookies = {}
         self.payload = {}
 
     def clone_testcase_request(self, scenario_id):
-        url_to_clone = f'{self.url}/cenarios/{scenario_id}/clonar/{self.suite_id}'
-        response_cloned_testcase = requests.post(url_to_clone, headers=self.headers, cookies=self.cookies, json=self.payload)
-        json_body = response_cloned_testcase.json()
-        return json_body['id']
+        cloned_test_id = RequestClone(self.token, self.suite_id, scenario_id).send_request_to_clone()
+        return cloned_test_id
 
     def update_testcase_request(self, cloned_testcase_id, test_id,title, genti_history_id):
-        url_to_update = f'{self.url}/cenarios/{cloned_testcase_id}'
+        print("Testeeeeeeee falta update")
+        """url_to_update = f'{self.url}/cenarios/{cloned_testcase_id}'
         payload = {
             "suiteId": f"{self.suite_id}",
             "nome": f"CT{test_id} - {title}",
@@ -27,7 +21,7 @@ class TSA:
             "tipoArtefato": "GENTI"
         }
         response_updated_testcase = requests.patch(url_to_update, headers=self.headers, cookies=self.cookies, json=payload)
-        return response_updated_testcase
+        return response_updated_testcase"""
 
     def create_test(self, scenario_id, test_id,title, genti_history_id):
         cloned_testcase_id = self.clone_testcase_request(scenario_id)
@@ -52,3 +46,33 @@ class TSA:
             print("Error sending the request:", e)
 
         print("Finished tests creation in TSA!")
+
+    """ Código funciona apenas no quando a biblioteca Requests está instalada
+    def __init__(self, token, suite_id):
+        self.token = token
+        self.url = "https://testesuaapi.ftabb.intranet.bb.com.br/api"
+        self.suite_id = suite_id
+        self.headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json"
+        }
+        self.cookies = {}
+        self.payload = {}
+    
+    def clone_testcase_request(self, scenario_id):
+        url_to_clone = f'{self.url}/cenarios/{scenario_id}/clonar/{self.suite_id}'
+        response_cloned_testcase = requests.post(url_to_clone, headers=self.headers, cookies=self.cookies, json=self.payload)
+        json_body = response_cloned_testcase.json()
+        return json_body['id']
+
+    def update_testcase_request(self, cloned_testcase_id, test_id,title, genti_history_id):
+        url_to_update = f'{self.url}/cenarios/{cloned_testcase_id}'
+        payload = {
+            "suiteId": f"{self.suite_id}",
+            "nome": f"CT{test_id} - {title}",
+            "historiaALM": f"{genti_history_id}",
+            "tipoArtefato": "GENTI"
+        }
+        response_updated_testcase = requests.patch(url_to_update, headers=self.headers, cookies=self.cookies, json=payload)
+        return response_updated_testcase
+        """

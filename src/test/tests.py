@@ -18,18 +18,24 @@ class TestCases:
 
         if team_id == 1:
             for variable in variables:
-                test_case_http_200 = TestCase(variable)
-                test_case_http_200.create_title(200, functionality_name, "Decimal on integer field")
-                test_case_http_200.create_steps(200, "Decimal on integer field")
-                self.test_cases_list.append(test_case_http_200)
-                test_case_http_400 = TestCase(variable)
-                test_case_http_400.create_title(400, functionality_name, "Random text on string field")
-                test_case_http_400.create_steps(400, "Random text on string field")
-                self.test_cases_list.append(test_case_http_400)
-                test_case_http_500 = TestCase(variable)
-                test_case_http_500.create_title(500, functionality_name, "Nonexistent in database")
-                test_case_http_500.create_steps(500, "Nonexistent in database")
-                self.test_cases_list.append(test_case_http_500)
+                if variable.var_type == "integer":
+                    test_case_http_200 = TestCase(variable)
+                    test_case_http_200.create_title(200, functionality_name, "Decimal on integer field")
+                    test_case_http_200.create_steps(200, "Decimal on integer field")
+                    self.test_cases_list.append(test_case_http_200)
+                    test_case_http_400 = TestCase(variable)
+                    test_case_http_400.create_title(400, functionality_name, "Random text on string field")
+                    test_case_http_400.create_steps(400, "Random text on string field")
+                    self.test_cases_list.append(test_case_http_400)
+                    test_case_http_500 = TestCase(variable)
+                    test_case_http_500.create_title(500, functionality_name, "Nonexistent in database")
+                    test_case_http_500.create_steps(500, "Nonexistent in database")
+                    self.test_cases_list.append(test_case_http_500)
+                elif variable.var_type == "string":
+                    test_case_http_500 = TestCase(variable)
+                    test_case_http_500.create_title(500, functionality_name, "Random text on string field")
+                    test_case_http_500.create_steps(500, "Random text on string field")
+                    self.test_cases_list.append(test_case_http_500)
 
 class TestCase:
     def __init__(self, variable):
@@ -42,6 +48,8 @@ class TestCase:
             self.title = f'[HTTP 200] Consultar a api de "{functionality_name}" passando o valor "{self.variable.value}.1" no campo "{self.variable.key}"'
         elif http_status == 400 and case_description == "Random text on string field":
             self.title = f'[HTTP 400] Consultar a api de "{functionality_name}" passando o valor "ABC" no campo "{self.variable.key}"'
+        elif http_status == 500 and case_description == "Random text on string field":
+            self.title = f'[HTTP 500] Consultar a api de "{functionality_name}" passando o valor "ABC" no campo "{self.variable.key}"'
         elif http_status == 500 and case_description == "Nonexistent in database":
             self.title = f'[HTTP 500] Consultar a api de "{functionality_name}" passando o valor "999" no campo "{self.variable.key}"'
         elif http_status == 500 and case_description == "Field missing":
@@ -60,6 +68,12 @@ class TestCase:
                 'Dado que o usuário está autenticado na API de Login,',
                 f'Quando Enviar a requisição com o valor “ABC” no campo “{self.variable.key}”,',
                 'Então a API deve rejeitar a requisição e retornar o status HTTP 400.\n'
+            ]
+        elif http_status == 500 and case_description == "Random text on string field":
+            self.steps = [
+                'Dado que o usuário está autenticado na API de Login,',
+                f'Quando Enviar a requisição com o valor “ABC” no campo “{self.variable.key}”,',
+                'Então a API deve rejeitar a requisição e retornar o status HTTP 500.\n'
             ]
         elif http_status == 500 and case_description == "Nonexistent in database":
             self.steps = [
