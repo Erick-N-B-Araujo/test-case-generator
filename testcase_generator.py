@@ -1,6 +1,5 @@
 from src.test.variables import Variables
 from src.test.tests import TestPlan
-from src.test.tests import TestCase
 from src.test.tests import TestCases
 from src.document.json import Json
 from src.automation.tsa import TSA
